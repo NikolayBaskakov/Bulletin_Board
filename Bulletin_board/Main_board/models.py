@@ -1,6 +1,11 @@
 from django.db import models
-from accounts.models import User
+from django.contrib.auth.models import AbstractUser
 # Create your models here.
+class User(AbstractUser):
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
+
 class Post(models.Model):
     class Meta:
         verbose_name = 'Пост'
