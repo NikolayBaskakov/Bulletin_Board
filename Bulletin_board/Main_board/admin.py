@@ -5,7 +5,9 @@ from django_summernote.admin import SummernoteModelAdmin
 class PostAdmin(admin.ModelAdmin):
     list_display = ('title', 'creation_date', 'author', 'category')
     
-admin.site.register(Post, PostAdmin)
+class PostSummernote(SummernoteModelAdmin):
+    summernote_fields = ('text',)
+admin.site.register(Post, SummernoteModelAdmin)
 
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name',)
