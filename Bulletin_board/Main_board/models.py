@@ -9,7 +9,7 @@ class Post(models.Model):
     creation_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата Создания')
     edit_date = models.DateTimeField(auto_now=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор')
-    text = models.TextField()
+    text = models.TextField(verbose_name='Текст поста')
     category = models.ForeignKey('Category', on_delete=models.CASCADE, verbose_name='Категория')
     
     def __str__(self):
