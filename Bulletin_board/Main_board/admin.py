@@ -2,12 +2,9 @@ from django.contrib import admin
 from .models import *
 from django_summernote.admin import SummernoteModelAdmin
 # Register your models here.
-class PostAdmin(admin.ModelAdmin):
-    list_display = ('title', 'creation_date', 'author', 'category')
-    
 class PostSummernote(SummernoteModelAdmin):
     summernote_fields = ('text',)
-    list_display = ('creation_date', 'id', 'author', 'category')
+    list_display = ( 'id', 'slug',  'author', 'category', 'edit_date', 'creation_date')
     prepopulated_fields = {"slug": ("title",)}
     
 admin.site.register(Post, PostSummernote)
