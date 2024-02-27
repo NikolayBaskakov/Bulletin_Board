@@ -16,6 +16,7 @@ class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор')
     text = models.TextField(verbose_name='Текст поста')
     category = models.ForeignKey('Category', on_delete=models.CASCADE, verbose_name='Категория')
+    slug = models.SlugField(max_length=20, null=False, unique=True)
     
     def __str__(self):
         return str(self.pk)
@@ -60,3 +61,4 @@ class Response(models.Model):
     post = models.ForeignKey('Post', on_delete=models.CASCADE, verbose_name='id Целевого поста')
     text = models.TextField()
     date = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
+    slug = models.SlugField(max_length=20, null=False, unique=True)
