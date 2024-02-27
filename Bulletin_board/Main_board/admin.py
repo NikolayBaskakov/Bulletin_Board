@@ -8,6 +8,7 @@ class PostAdmin(admin.ModelAdmin):
 class PostSummernote(SummernoteModelAdmin):
     summernote_fields = ('text',)
     list_display = ('creation_date', 'id', 'author', 'category')
+    prepopulated_fields = {"slug": ("title",)}
     
 admin.site.register(Post, PostSummernote)
 
@@ -18,5 +19,5 @@ admin.site.register(Category, CategoryAdmin)
 
 class ResponseAdmin(admin.ModelAdmin):
     list_display = ('author', 'post', 'date')
-    
+    prepopulated_fields = {"slug": ("title",)}
 admin.site.register(Response, ResponseAdmin)
