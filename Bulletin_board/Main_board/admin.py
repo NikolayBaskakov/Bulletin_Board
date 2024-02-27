@@ -7,7 +7,9 @@ class PostAdmin(admin.ModelAdmin):
     
 class PostSummernote(SummernoteModelAdmin):
     summernote_fields = ('text',)
-admin.site.register(Post, SummernoteModelAdmin)
+    list_display = ('creation_date', 'id', 'author', 'category')
+    
+admin.site.register(Post, PostSummernote)
 
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name',)
