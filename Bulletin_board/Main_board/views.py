@@ -1,8 +1,9 @@
 from typing import Any
 from django.db.models.query import QuerySet
 from django.forms import BaseModelForm
-from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
 from .filters import PostFilter
 from .models import *
@@ -38,7 +39,7 @@ def search(request):
     context = {'filterset': filterset}
     return render(request, 'search.html', context)
 
-class PostCreate(CreateView):
+class PostCreate(LoginRequiredMixin, CreateView):
     form_class = PostForm
     model = Post
     template_name = 'post_edit.html'
@@ -51,16 +52,29 @@ class PostCreate(CreateView):
         new_post.save()
         return super().form_valid(form)
 
-class PostUpdate(UpdateView):
+class PostUpdate(LoginRequiredMixin, UpdateView):
     form_class = PostForm
     model = Post
     template_name = 'post_edit.html'
     
-    def get_queryset(self) -> QuerySet[Any]:
-        return Post.objects.all()
+    def form_valid(self, form):
+        if self.request.method == "POST":
+            if self.request.user == self.get_object().author:
+                return super().form_valid(form)
+            elif self.request.user != self.get_object().author:
+                return HttpResponseRedirect('/mainboard/delerror')
     
-class PostDelete(DeleteView):
+class PostDelete(LoginRequiredMixin, DeleteView):
     model = Post
     template_name = 'post_delete.html'
     success_url = reverse_lazy('post-list')
     
+    def form_valid(self, form):
+        if self.request.method == "POST":
+            if self.request.user == self.get_object().author:
+                return super().form_valid(form)
+            elif self.request.user != self.get_object().author:
+                return HttpResponseRedirect('/mainboard/delerror')
+            
+def delerror(request):
+    return render(request, 'delerror.html')
