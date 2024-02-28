@@ -18,3 +18,8 @@ class ResponseAdmin(admin.ModelAdmin):
     list_display = ('author', 'post', 'date')
     prepopulated_fields = {"slug": ("title",)}
 admin.site.register(Response, ResponseAdmin)
+
+class UserAdmin(admin.ModelAdmin):
+    list_display = ('username', 'email', 'is_staff', 'is_active', )
+
+admin.site.register(User, UserAdmin)
