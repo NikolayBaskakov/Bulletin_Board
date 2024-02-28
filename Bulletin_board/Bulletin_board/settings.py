@@ -154,6 +154,7 @@ ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = True
 ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 3600
 ACCOUNT_LOGOUT_REDIRECT_URL ='/accounts/login/'
 LOGIN_REDIRECT_URL = '/mainboard/profile/'
+LOGIN_URL = '/accounts/login'
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
@@ -175,3 +176,4 @@ EMAIL_ADMIN = EMAIL_HOST_USER
 STATICFILES_DIRS = [
     BASE_DIR / "static"
 ]
+
