@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.urls import reverse
 # Create your models here.
 class User(AbstractUser):
     class Meta:
@@ -10,7 +11,7 @@ class Post(models.Model):
     class Meta:
         verbose_name = 'Пост'
         verbose_name_plural = 'Посты'
-    title = models.CharField(max_length=25, verbose_name='Заголовок')
+    title = models.CharField(max_length=30, verbose_name='Заголовок')
     creation_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата Создания')
     edit_date = models.DateTimeField(auto_now=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор')
@@ -20,6 +21,9 @@ class Post(models.Model):
     
     def __str__(self):
         return str(self.slug)
+    
+    def get_absolute_url(self):
+        return reverse('post-detail', args=[str(self.id)])
     
 class Category(models.Model):
     class Meta:

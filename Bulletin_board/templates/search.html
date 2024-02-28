@@ -1,0 +1,13 @@
+{% extends 'default.html' %}
+
+{% block title %}
+ФИЛЬТРЫ
+{% endblock title %}
+
+{% block content %}
+<form action="/mainboard" method="get">
+    {{ filterset.form.as_p }}
+    <input type="submit" value="Найти" />
+    <input type="reset" value="Сбросить" />
+</form>
+{% endblock content %}

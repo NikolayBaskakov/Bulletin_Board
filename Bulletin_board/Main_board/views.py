@@ -1,13 +1,66 @@
+from typing import Any
+from django.db.models.query import QuerySet
+from django.forms import BaseModelForm
+from django.http import HttpResponse
 from django.shortcuts import render
-from django.views.generic import DetailView, ListView
+from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
+from .filters import PostFilter
 from .models import *
+from .forms import PostForm
+from .custom_utils import make_slug
+from django.urls import reverse_lazy
 # Create your views here.
 class PostList(ListView):
     model = Post
+    orderng = 'creation_date'
     template_name = 'post_list.html'
     context_object_name = 'posts'
+    paginate_by = 2
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        self.filterset = PostFilter(self.request.GET, queryset)
+        return self.filterset.qs
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['filterset'] = self.filterset
+        return context
     
 class PostDetail(DetailView):
     model = Post
     template_name = 'post_detail.html'
     context_object_name = 'post'
+
+def search(request):
+    queryset = Post.objects.all()
+    filterset = PostFilter(request.GET, queryset)
+    context = {'filterset': filterset}
+    return render(request, 'search.html', context)
+
+class PostCreate(CreateView):
+    form_class = PostForm
+    model = Post
+    template_name = 'post_edit.html'
+    
+    def form_valid(self, form):
+        new_post = form.save(commit=False)
+        if self.request.method == 'POST':
+            new_post.author = self.request.user
+            new_post.slug = make_slug(new_post.title)
+        new_post.save()
+        return super().form_valid(form)
+
+class PostUpdate(UpdateView):
+    form_class = PostForm
+    model = Post
+    template_name = 'post_edit.html'
+    
+    def get_queryset(self) -> QuerySet[Any]:
+        return Post.objects.all()
+    
+class PostDelete(DeleteView):
+    model = Post
+    template_name = 'post_delete.html'
+    success_url = reverse_lazy('post-list')
+    
