@@ -6,8 +6,9 @@
 Bulletin Board
 {% endblock title%}
 {% block content %}
+    {% if post %}
     <a href="../mainboard/search">ФИЛЬТРЫ</a>
-
+    
     {% for post in posts %}
         {{post.text|safe}}
     {% endfor %}
@@ -28,5 +29,8 @@ Bulletin Board
             ...
             <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
         {% endif %}
+    {% endif %}
+    {% else %}
+        <h1>Посты отсутствуют</h1>
     {% endif %}
 {% endblock content %}
