@@ -18,8 +18,10 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
+from Main_board.views import start_page
 
 urlpatterns = [
+    path('', start_page),
     path('admin/', admin.site.urls),
     path('mainboard/', include('Main_board.urls')),
     path('accounts/', include('allauth.urls')),

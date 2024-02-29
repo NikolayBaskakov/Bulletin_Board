@@ -2,7 +2,7 @@ from typing import Any
 from django.db.models.query import QuerySet
 from django.forms import BaseModelForm
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
 from .filters import PostFilter
@@ -78,3 +78,6 @@ class PostDelete(LoginRequiredMixin, DeleteView):
             
 def delerror(request):
     return render(request, 'delerror.html')
+
+def start_page(request):
+    return HttpResponseRedirect('/mainboard/')
