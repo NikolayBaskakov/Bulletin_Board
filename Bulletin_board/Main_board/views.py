@@ -13,7 +13,7 @@ from django.urls import reverse_lazy
 # Create your views here.
 class PostList(ListView):
     model = Post
-    orderng = 'creation_date'
+    ordering = ['creation_date']
     template_name = 'post_list.html'
     context_object_name = 'posts'
     paginate_by = 2
@@ -81,3 +81,18 @@ def delerror(request):
 
 def start_page(request):
     return HttpResponseRedirect('/mainboard/')
+
+class ProfileView(ListView):
+    model = Post
+    ordering = ['creation_date']
+    template_name = 'profile.html'
+    context_object_name = 'posts'
+    paginate_by = 2
+    
+    def get_queryset(self):
+        return Post.objects.filter(author=self.request.user).order_by('creation_date')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['path'] = self.request.path
+        return context
