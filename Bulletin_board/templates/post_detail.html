@@ -1,5 +1,45 @@
 {% extends 'default.html' %}
 
+{% block title %}
+{{ post.title }}
+{% endblock title%}
+
+{% block links %}
+    {% if user.is_authenticated %}
+        <li class="nav-item"><a class="nav-link active" aria-current="page" href="/mainboard/create">Создать пост</a></li>
+    {% endif%}
+{% endblock links %}
+
+{% block account %}
+    {% if user.is_authenticated %}
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ user.username }}</a>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" href="/mainboard/profile">Профиль</a></li>
+            <li><hr class="dropdown-divider" /></li>
+            <li><a class="dropdown-item" href="/accounts/logout/">Выйти</a></li>
+        </ul>
+    </li>
+    {% else %}
+        <li class="nav-item"><a class="nav-link" href="/accounts/login/">Войти</a></li>
+    {% endif %}
+{% endblock account %}
+
 {% block content%}
-{{post.text|safe}}
+    <hr>
+    <h2><a href="/mainboard/{{ post.slug }}/">{{ post.title }}</a></h2>
+    <h3>Автор - {{ post.author.username }}</h3>
+    {{post.text|safe}}
+    {% if user != post.author %}
+        <a href="/mainboard/{{ post.slug }}/setresponse">Оставить отклик</a>
+    {% endif %}
+    {% if user == post.author%}
+        <p>
+            <a href="/mainboard/{{ post.slug }}/delete">Удалить пост</a>
+            <b>  |  </b>
+            <a href="/mainboard/{{ post.slug }}/update">Редактировать</a>
+        </p>
+    {% endif %}
+    
+    <hr>
 {% endblock content %}
