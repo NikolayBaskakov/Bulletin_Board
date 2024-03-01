@@ -1,5 +1,26 @@
 {% extends 'default.html' %}
 
+{% block links %}
+    {% if user.is_authenticated %}
+        <li class="nav-item"><a class="nav-link active" aria-current="page" href="/mainboard/create">Создать пост</a></li>
+    {% endif%}
+{% endblock links %}
+
+{% block account %}
+    {% if user.is_authenticated %}
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ user.username }}</a>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" href="/mainboard/profile">Профиль</a></li>
+            <li><hr class="dropdown-divider" /></li>
+            <li><a class="dropdown-item" href="/accounts/logout/">Выйти</a></li>
+        </ul>
+    </li>
+    {% else %}
+        <li class="nav-item"><a class="nav-link" href="/accounts/login/">Войти</a></li>
+    {% endif %}
+{% endblock account %}
+
 {% block content%}
 <h1>Вы не можете удалить или редактировать эту запись, так как не являетесь автором</h1>
 {% endblock content%}
