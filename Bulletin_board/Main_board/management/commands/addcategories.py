@@ -11,5 +11,6 @@ class Command(BaseCommand):
         try:
             for category in Category.TYPES:
                 Category.objects.create(name=category[0])
+                self.stdout.write(f'Create <Category.object: {Category.objects.get(name=category[0])}> ')
         except IntegrityError:
             self.stdout.write('Categories allready exixts. News categories haven`t been created.')
