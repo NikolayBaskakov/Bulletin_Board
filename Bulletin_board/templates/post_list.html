@@ -39,6 +39,13 @@ Bulletin Board
             {% if user != post.author %}
                 <a href="/mainboard/{{ post.slug }}/setresponse">Оставить отклик</a>
             {% endif %}
+            {% if user == post.author%}
+                <p>
+                    <a href="/mainboard/{{ post.slug }}/delete">Удалить пост</a>
+                    <b>  |  </b>
+                    <a href="/mainboard/{{ post.slug }}/update">Редактировать</a>
+                </p>
+            {% endif %}
             <hr>
         {% endfor %}
 
