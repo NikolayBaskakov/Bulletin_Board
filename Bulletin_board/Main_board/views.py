@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView, FormView
-from .filters import PostFilter
+from .filters import *
 from .models import *
 from .forms import PostForm, ResponseForm
 from .custom_utils import make_slug
@@ -15,17 +15,12 @@ class PostList(ListView):
     ordering = ['creation_date']
     template_name = 'post_list.html'
     context_object_name = 'posts'
-    paginate_by = 2
+    paginate_by = 10
     
     def get_queryset(self):
         queryset = super().get_queryset()
         self.filterset = PostFilter(self.request.GET, queryset)
         return self.filterset.qs
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['filterset'] = self.filterset
-        return context
     
 class PostDetail(DetailView):
     model = Post
@@ -37,6 +32,18 @@ def search(request):
     filterset = PostFilter(request.GET, queryset)
     context = {'filterset': filterset}
     return render(request, 'search.html', context)
+
+def response_search(request):
+    queryset = Response.objects.filter(author=request.user)
+    filterset = ResponseFilter(request.GET, queryset)
+    context = {'filterset': filterset}
+    return render(request, 'response_search.html', context)
+
+def post_search(request):
+    queryset = Post.objects.filter(author=request.user)
+    filterset = SingleUserPostFilter(request.GET, queryset)
+    context = {'filterset': filterset}
+    return render(request, 'post_search.html', context)
 
 class PostCreate(LoginRequiredMixin, CreateView):
     form_class = PostForm
@@ -98,14 +105,14 @@ def start_page(request):
 
 class UserResponsesView(LoginRequiredMixin, ListView):
     model = Response
-    ordering = ['creation_date']
     template_name = 'responses.html'
     context_object_name = 'responses'
-    paginate_by = 2
+    paginate_by = 10
     
     def get_queryset(self):
         queryset = Response.objects.filter(author=self.request.user)
-        return queryset
+        self.filterset = ResponseFilter(self.request.GET, queryset)
+        return self.filterset.qs
         
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -117,11 +124,12 @@ class UserPostsView(LoginRequiredMixin, ListView):
     ordering = ['creation_date']
     template_name = 'posts.html'
     context_object_name = 'posts'
-    paginate_by = 2
+    paginate_by = 10
     
     def get_queryset(self):
         queryset = Post.objects.filter(author=self.request.user)
-        return queryset
+        self.filterset = PostFilter(self.request.GET, queryset)
+        return self.filterset.qs
         
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

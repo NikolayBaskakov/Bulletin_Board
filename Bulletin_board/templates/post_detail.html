@@ -28,7 +28,7 @@
 {% block content%}
     <hr>
     <h2><a href="/mainboard/{{ post.slug }}/">{{ post.title }}</a></h2>
-    <h3>Автор - {{ post.author.username }}</h3>
+    <h3>Автор - {{ post.author.username }} | Категория - {{post.category}}</h3>
     {{post.text|safe}}
     {% if user != post.author %}
         <a href="/mainboard/{{ post.slug }}/setresponse">Оставить отклик</a>

@@ -26,14 +26,16 @@
 {% endblock account %}
 
 {% block content %}
+    <a href="/mainboard/post-search">ФИЛЬТРЫ</a>
     {% if posts %}
-        <a href="../mainboard/search">ФИЛЬТРЫ</a>
+        
         
         {% for post in posts %}
             <hr>
             <h2><a href="/mainboard/{{ post.slug }}/">{{ post.title }}</a></h2>
-            <h3>Автор - {{ post.author.username }}</h3>
+            <h3>Автор - {{ post.author.username }} | Категория - {{post.category}}</h3>
             {{post.text|safe}}
+
             
             {% if user == post.author%}
                 <p>

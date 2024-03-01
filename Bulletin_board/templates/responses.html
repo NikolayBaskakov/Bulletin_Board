@@ -26,22 +26,15 @@
 {% endblock account %}
 
 {% block content %}
-    {% if posts %}
-        <a href="../mainboard/search">ФИЛЬТРЫ</a>
+    <a href="/mainboard/response-search">ФИЛЬТРЫ</a>
+    {% if responses %}
         
-        {% for post in posts %}
+        
+        {% for response in responses %}
             <hr>
-            <h2><a href="/mainboard/{{ post.slug }}/">{{ post.title }}</a></h2>
-            <h3>Автор - {{ post.author.username }}</h3>
-            {{post.text|safe}}
-            
-            {% if user == post.author%}
-                <p>
-                    <a href="/mainboard/{{ post.slug }}/delete">Удалить пост</a>
-                    <b>  |  </b>
-                    <a href="/mainboard/{{ post.slug }}/update">Редактировать</a>
-                </p>
-            {% endif %}
+            Автор - {{ response.author.username }}
+            К посту: "{{response.post.title}}"
+            <h2>{{response.text|safe}}</h2>
             <hr>
         {% endfor %}
 
@@ -63,6 +56,6 @@
             {% endif %}
         {% endif %}
     {% else %}
-        <h1>Посты отсутствуют</h1>
+        <h1>Отклики отсутствуют</h1>
     {% endif %}
 {% endblock content %}
