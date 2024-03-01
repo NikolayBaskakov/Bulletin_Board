@@ -96,16 +96,36 @@ def delerror(request):
 def start_page(request):
     return HttpResponseRedirect('/mainboard/')
 
-class ProfileView(LoginRequiredMixin, ListView):
+class UserResponsesView(LoginRequiredMixin, ListView):
+    model = Response
+    ordering = ['creation_date']
+    template_name = 'responses.html'
+    context_object_name = 'responses'
+    paginate_by = 2
+    
+    def get_queryset(self):
+        queryset = Response.objects.filter(author=self.request.user)
+        return queryset
+        
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['page_title'] = 'My responses'
+        return context
+    
+class UserPostsView(LoginRequiredMixin, ListView):
     model = Post
     ordering = ['creation_date']
-    template_name = 'profile.html'
+    template_name = 'posts.html'
     context_object_name = 'posts'
     paginate_by = 2
     
+    def get_queryset(self):
+        queryset = Post.objects.filter(author=self.request.user)
+        return queryset
+        
     def get_context_data(self, **kwargs):
-        context = super().get_context_data()
-        context['path'] = self.request.path
+        context = super().get_context_data(**kwargs)
+        context['page_title'] = 'My posts'
         return context
     
 class ResponseCreate(LoginRequiredMixin, CreateView):
@@ -126,3 +146,8 @@ class ResponseCreate(LoginRequiredMixin, CreateView):
             new_response.post = self.get_object()
         new_response.save()
         return super().form_valid(form)
+    
+@login_required
+def profile(request):
+    context = {'user': request.user}
+    return render(request, 'profile.html', context)

@@ -3,7 +3,7 @@
 {% load custom_tags %}
 
 {% block title %}
-Bulletin Board
+{{ page_title}}
 {% endblock title%}
 
 {% block links %}
@@ -13,49 +13,21 @@ Bulletin Board
 {% endblock links %}
 
 {% block account %}
-    {% if user.is_authenticated %}
-        <li class="nav-item"><a class="nav-link" href="/accounts/logout/">Выйти</a></li>
-    {% endif %}
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ user.username }}</a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+        <li><a class="dropdown-item" href="/mainboard/profile">Профиль</a></li>
+        <li><a class="dropdown-item" href="/mainboard/posts">Мои объявления</a></li>
+        <li><a class="dropdown-item" href="/mainboard/responses">Отклики</a></li>
+        <li><hr class="dropdown-divider" /></li>
+        <li><a class="dropdown-item" href="/accounts/logout/">Выйти</a></li>
+    </ul>
+</li>
 {% endblock account %}
 
 {% block content %}
-    {% if posts %}
-        <a href="../mainboard/search">ФИЛЬТРЫ</a>
-        
-        {% for post in posts %}
-            <hr>
-            <h2>{{ post.title }}</h2>
-            <h3>Автор - {{ post.author.username }}</h3>
-            {{post.text|safe}}
-            
-            {% if user == post.author%}
-                <p>
-                    <a href="/mainboard/{{ post.slug }}/delete">Удалить пост</a>
-                    <b>  |  </b>
-                    <a href="/mainboard/{{ post.slug }}/update">Редактировать</a>
-                </p>
-            {% endif %}
-            <hr>
-        {% endfor %}
-
-        {% if page_obj.has_previous %}
-            <a href="?{% url_replace page=1 %}">1</a>
-            {% if page_obj.previous_page_number != 1 %}
-                ...
-                <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
-            {% endif %}
-        {% endif %}
-
-        {{ page_obj.number }}
-
-        {% if page_obj.has_next %}
-            <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
-            {% if paginator.num_pages != page_obj.next_page_number %}
-                ...
-                <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
-            {% endif %}
-        {% endif %}
-    {% else %}
-        <h1>Посты отсутствуют</h1>
-    {% endif %}
+    <h1>Username: {{ user.username}}</h1>
+    <h1>Email: {{ user.email}}</h1>
+    <h1><a href="/accounts/email">Change email</a></h1>
+    <h1><a href="/accounts/password/change">Change password</a></h1>
 {% endblock content %}
