@@ -33,9 +33,12 @@ Bulletin Board
         
         {% for post in posts %}
             <hr>
-            <h2>{{ post.title }}</h2>
+            <h2><a href="/mainboard/{{ post.slug }}/">{{ post.title }}</a></h2>
             <h3>Автор - {{ post.author.username }}</h3>
             {{post.text|safe}}
+            {% if user != post.author %}
+                <a href="/mainboard/{{ post.slug }}/setresponse">Оставить отклик</a>
+            {% endif %}
             <hr>
         {% endfor %}
 

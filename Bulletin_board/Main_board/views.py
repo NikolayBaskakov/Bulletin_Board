@@ -1,13 +1,12 @@
-from typing import Any
 from django.db.models.query import QuerySet
-from django.forms import BaseModelForm
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView, FormView
 from .filters import PostFilter
 from .models import *
-from .forms import PostForm
+from .forms import PostForm, ResponseForm
 from .custom_utils import make_slug
 from django.urls import reverse_lazy
 # Create your views here.
@@ -82,7 +81,7 @@ def delerror(request):
 def start_page(request):
     return HttpResponseRedirect('/mainboard/')
 
-class ProfileView(ListView):
+class ProfileView(LoginRequiredMixin, ListView):
     model = Post
     ordering = ['creation_date']
     template_name = 'profile.html'
@@ -96,3 +95,22 @@ class ProfileView(ListView):
         context = super().get_context_data()
         context['path'] = self.request.path
         return context
+    
+class ResponseCreate(LoginRequiredMixin, CreateView):
+    template_name = 'response_create.html'
+    form_class = ResponseForm
+    success_url = ''
+    model = Response
+    success_url = '/mainboard/'
+    
+    def get_queryset(self):
+        return Post.objects.all()
+    
+    def form_valid(self, form):
+        new_response = form.save(commit=False)
+        if self.request.method == 'POST':
+            new_response.author = self.request.user
+            new_response.slug = make_slug(new_response.text[:10])
+            new_response.post = self.get_object()
+        new_response.save()
+        return super().form_valid(form)

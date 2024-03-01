@@ -1,6 +1,8 @@
+from typing import Any
 from django import forms
 from django_summernote.widgets import SummernoteWidget
-from .models import Post
+from django.core.exceptions import ValidationError
+from .models import Post, Response
 
 class PostForm(forms.ModelForm):
     title = forms.CharField(max_length=30)
@@ -15,3 +17,17 @@ class PostForm(forms.ModelForm):
         widgets = {
             'text': SummernoteWidget()
         }
+        
+class ResponseForm(forms.ModelForm):
+    class Meta:
+        model = Response
+        fields = [
+            'text'
+        ]
+        
+    def clean(self):
+        cleaned_data = super().clean()
+        text = cleaned_data.get('text')
+        if len(text) < 10:
+            raise ValidationError("Отклик должен быть не менее 10 символов!")
+        return cleaned_data

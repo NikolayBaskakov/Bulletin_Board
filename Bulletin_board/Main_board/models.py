@@ -63,7 +63,6 @@ class Response(models.Model):
         verbose_name_plural = 'Отклики'
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор')
     post = models.ForeignKey('Post', on_delete=models.CASCADE, verbose_name='Целевой пост')
-    title = models.CharField(max_length=25, verbose_name='Заголовок')
-    text = models.TextField()
+    text = models.TextField(max_length=500)
     date = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     slug = models.SlugField(max_length=20, null=False, unique=True)
