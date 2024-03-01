@@ -103,9 +103,6 @@ class ProfileView(LoginRequiredMixin, ListView):
     context_object_name = 'posts'
     paginate_by = 2
     
-    def get_queryset(self):
-        return Post.objects.filter(author=self.request.user).order_by('creation_date')
-    
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
         context['path'] = self.request.path
