@@ -22,7 +22,7 @@ admin.site.register(Category, CategoryAdmin)
 
 class ResponseAdmin(admin.ModelAdmin):
     list_display = ('author', 'post', 'date')
-    prepopulated_fields = {"slug": ("title",)}
+    prepopulated_fields = {"slug": ("text",)}
 admin.site.register(Response, ResponseAdmin)
 
 class UserAdmin(admin.ModelAdmin):
