@@ -67,3 +67,4 @@ class Response(models.Model):
     text = models.TextField(max_length=500)
     date = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     slug = models.SlugField(max_length=20, null=False, unique=True)
+    applied = models.BooleanField(default=None, null=True)
