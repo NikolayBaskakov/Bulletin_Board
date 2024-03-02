@@ -34,7 +34,7 @@ def search(request):
     return render(request, 'search.html', context)
 
 def response_search(request):
-    queryset = Response.objects.filter(author=request.user)
+    queryset = Response.objects.filter(post__author=request.user)
     filterset = ResponseFilter(request.GET, queryset)
     context = {'filterset': filterset}
     return render(request, 'response_search.html', context)
