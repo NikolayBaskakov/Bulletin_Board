@@ -1,12 +1,14 @@
 from django.db.models.query import QuerySet
-from django.http import HttpResponseRedirect
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView, FormView
+from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
 from .filters import *
 from .models import *
-from .forms import PostForm, ResponseForm
+from .forms import *
+from.signals import response_apply
 from .custom_utils import make_slug
 from django.urls import reverse_lazy
 # Create your views here.
@@ -110,7 +112,7 @@ class UserResponsesView(LoginRequiredMixin, ListView):
     paginate_by = 10
     
     def get_queryset(self):
-        queryset = Response.objects.filter(post__author=self.request.user)
+        queryset = Response.objects.filter(post__author=self.request.user).order_by('date')
         self.filterset = ResponseFilter(self.request.GET, queryset)
         return self.filterset.qs
         
@@ -118,6 +120,19 @@ class UserResponsesView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['page_title'] = 'My responses'
         return context
+    
+    def post(self, request, *args, **kwargs):
+            response_id = self.request.POST.get('response_id')
+            response_obj = Response.objects.get(id=response_id)
+            action = self.request.POST.get('action')
+            
+            if action == 'apply':
+                response_obj.applied = True
+                response_obj.save()
+                response_apply.send(sender=self.__class__, class_obj=response_obj)
+            elif action == 'deny':
+                response_obj.delete()
+            return HttpResponseRedirect('/mainboard/responses')
     
 class UserPostsView(LoginRequiredMixin, ListView):
     model = Post
@@ -143,9 +158,23 @@ class ResponseCreate(LoginRequiredMixin, CreateView):
     model = Response
     success_url = '/mainboard/'
     
+    
     def get_queryset(self):
         return Post.objects.all()
     
+    def get(self, request, *args, **kwargs):
+        if request.user == self.get_object().author:
+            return HttpResponseRedirect('/mainboard/responses')
+        else:
+            return super().get(request, *args, **kwargs)
+        
+    def post(self, request, *args, **kwargs):
+        reset = self.request.POST.get('reset')
+        if reset == 'deny':
+            return HttpResponseRedirect('/mainboard/')
+        else:
+            return super().post(request, *args, **kwargs)
+        
     def form_valid(self, form):
         new_response = form.save(commit=False)
         if self.request.method == 'POST':

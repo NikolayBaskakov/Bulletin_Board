@@ -31,3 +31,6 @@ class ResponseForm(forms.ModelForm):
         if len(text) < 10:
             raise ValidationError("Отклик должен быть не менее 10 символов!")
         return cleaned_data
+    
+class ResponseApplyForm(forms.Form):
+    pass

@@ -35,6 +35,22 @@
             Отправитель - {{ response.author.username }}
             К посту: "{{response.post.title}}"
             <h2>{{response.text|safe}}</h2>
+            {% if response.applied == Null %}
+            <p>
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="response_id" value="{{ response.id }}" />
+    
+                    
+                        <button name="action" value="apply">Принять отклик</button>
+                        <button name="action" value="deny">Отклонить(удалить) отклик</button>
+                    
+                </form>
+            </p>
+            {% elif response.applied == True %}
+                <h4 style="color: green;">Отклик принят</h4>
+
+            {% endif %}
             <hr>
         {% endfor %}
 
