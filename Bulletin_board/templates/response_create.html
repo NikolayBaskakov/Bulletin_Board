@@ -28,6 +28,6 @@
     {% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="Save" />
-    <button name="reset" value="deny">Отменить</button>
+    <button name="reset" onclick="history.back();" value="deny">Отменить</button>
 </form>
 {% endblock content %}

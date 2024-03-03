@@ -168,13 +168,6 @@ class ResponseCreate(LoginRequiredMixin, CreateView):
         else:
             return super().get(request, *args, **kwargs)
         
-    def post(self, request, *args, **kwargs):
-        reset = self.request.POST.get('reset')
-        if reset == 'deny':
-            return HttpResponseRedirect('/mainboard/')
-        else:
-            return super().post(request, *args, **kwargs)
-        
     def form_valid(self, form):
         new_response = form.save(commit=False)
         if self.request.method == 'POST':
