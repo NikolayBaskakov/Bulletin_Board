@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'allauth',
     'allauth.account',
+    'allauth.mfa',
     'allauth.socialaccount',
     'Main_board',
     'django_summernote',
@@ -156,7 +157,7 @@ ACCOUNT_LOGOUT_REDIRECT_URL ='/accounts/login/'
 LOGIN_REDIRECT_URL = '/mainboard/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/mainboard/'
 LOGIN_URL = '/accounts/login'
-
+MFA_TOTP_ISSUER = "Bulletin Board"
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
