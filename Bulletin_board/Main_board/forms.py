@@ -1,5 +1,6 @@
 import random
 from django import forms
+from django_summernote.fields import SummernoteTextFormField, SummernoteTextField
 from django_summernote.widgets import SummernoteWidget
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
