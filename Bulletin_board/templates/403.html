@@ -1,0 +1,19 @@
+{% extends 'default.html' %}
+{% block content %}
+    {% if user.verified == True %}
+        <h2>Ошибка 403: у вас нет доступа к данной странице.</h2>
+        <h4>Для получения доступа обратитесь к администратору.</h4>
+    {% else %}
+        <h2>Ваш аккаунт не подтвержден. Введите код верификации:</h2>
+        <form action="/mainboard/verification/" method="post">
+            {% csrf_token %}
+            <label for="verification_code">Введите код код подтверждения, отправленный на почту {{ user.email }}:</label><br>
+            <input type="text" name="verification_code" maxlength="6" required><br><br>
+            <input type="submit" value="Подтвердить"><br>
+        </form>
+        <form action="/mainboard/verification/" method="post">
+            {% csrf_token %}
+            <button name="send_code" value="send">Повторно отправить код на почту</button>
+        </form>
+    {% endif %}
+{% endblock content %}

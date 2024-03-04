@@ -144,7 +144,6 @@ STATIC_URL = 'static/'
 
 AUTH_USER_MODEL = 'Main_board.User'
 
-ACCOUNT_FORMS = {'signup': 'Main_board.forms.CustomSignupForm'}
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = True
@@ -154,10 +153,8 @@ ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
 ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = True
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 ACCOUNT_CHANGE_EMAIL = True
-ACCOUNT_LOGOUT_REDIRECT_URL ='/accounts/login/'
-LOGIN_REDIRECT_URL = '/mainboard/'
+LOGIN_REDIRECT_URL = '/mainboard/profile/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/mainboard/'
-LOGIN_URL = '/accounts/login'
 MFA_TOTP_ISSUER = "Bulletin Board"
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',

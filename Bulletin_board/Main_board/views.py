@@ -1,16 +1,16 @@
 from django.db.models.query import QuerySet
 from django.forms import BaseModelForm
-from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import check_password
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.views.decorators.csrf import csrf_protect
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView, View
 from .filters import *
 from .models import *
 from .forms import *
-from.signals import response_apply
+from .signals import response_apply, email_confirmed_by_code
 from .custom_utils import make_slug
 from django.urls import reverse_lazy
 # Create your views here.
@@ -37,22 +37,27 @@ def search(request):
     context = {'filterset': filterset}
     return render(request, 'search.html', context)
 
+@login_required
+@permission_required('Main_board.standard', raise_exception=True)
 def response_search(request):
     queryset = Response.objects.filter(post__author=request.user)
     filterset = ResponseFilter(request.GET, queryset)
     context = {'filterset': filterset}
     return render(request, 'response_search.html', context)
 
+@login_required
+@permission_required('Main_board.standard', raise_exception=True)
 def post_search(request):
     queryset = Post.objects.filter(author=request.user)
     filterset = SingleUserPostFilter(request.GET, queryset)
     context = {'filterset': filterset}
     return render(request, 'post_search.html', context)
 
-class PostCreate(LoginRequiredMixin, CreateView):
+class PostCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     form_class = PostForm
     model = Post
     template_name = 'post_edit.html'
+    permission_required = 'Main_board.standard'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -67,10 +72,11 @@ class PostCreate(LoginRequiredMixin, CreateView):
         new_post.save()
         return super().form_valid(form)
 
-class PostUpdate(LoginRequiredMixin, UpdateView):
+class PostUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     form_class = PostForm
     model = Post
     template_name = 'post_edit.html'
+    permission_required = 'Main_board.standard'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -84,10 +90,11 @@ class PostUpdate(LoginRequiredMixin, UpdateView):
             elif self.request.user != self.get_object().author:
                 return HttpResponseRedirect('/mainboard/delerror')
     
-class PostDelete(LoginRequiredMixin, DeleteView):
+class PostDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Post
     template_name = 'post_delete.html'
     success_url = reverse_lazy('post-list')
+    permission_required = 'Main_board.standard'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -107,11 +114,12 @@ def delerror(request):
 def start_page(request):
     return HttpResponseRedirect('/mainboard/')
 
-class UserResponsesView(LoginRequiredMixin, ListView):
+class UserResponsesView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = Response
     template_name = 'responses.html'
     context_object_name = 'responses'
     paginate_by = 10
+    permission_required = 'Main_board.standard'
     
     def get_queryset(self):
         queryset = Response.objects.filter(post__author=self.request.user).order_by('date')
@@ -136,12 +144,13 @@ class UserResponsesView(LoginRequiredMixin, ListView):
                 response_obj.delete()
             return HttpResponseRedirect('/mainboard/responses')
     
-class UserPostsView(LoginRequiredMixin, ListView):
+class UserPostsView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = Post
     ordering = ['creation_date']
     template_name = 'posts.html'
     context_object_name = 'posts'
     paginate_by = 10
+    permission_required = 'Main_board.standard'
     
     def get_queryset(self):
         queryset = Post.objects.filter(author=self.request.user)
@@ -153,13 +162,13 @@ class UserPostsView(LoginRequiredMixin, ListView):
         context['page_title'] = 'My posts'
         return context
     
-class ResponseCreate(LoginRequiredMixin, CreateView):
+class ResponseCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     template_name = 'response_create.html'
     form_class = ResponseForm
     success_url = ''
     model = Response
     success_url = '/mainboard/'
-    
+    permission_required = 'Main_board.standard'
     
     def get_queryset(self):
         return Post.objects.all()
@@ -180,22 +189,34 @@ class ResponseCreate(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
     
 @login_required
+@permission_required('Main_board.standard', raise_exception=True)
 def profile(request):
     context = {'user': request.user}
     return render(request, 'profile.html', context)
 
-class EmailVerifyView(UpdateView):
-    model = User
+class EmailVerifyView(View):
+    def get(self, request, *args, **kwargs):
+        return HttpResponseRedirect('/mainboard/profile/')
     
     def post(self, request, *args, **kwargs):
-        email = pass #TODO
-        code = str(self.request.POST.get('code'))
-        user = User.objects.get(email=email)
-        print(user.is_active)
-        if check_password(code, user.code):
-            user.is_active = True
-            user.save()
-            print('отработал')
-            return HttpResponseRedirect('/mainboard/profile/')
+        send = self.request.POST.get('send_code')
+        if send:
+            print('Нужно отправить повторно')
+            code = str(random.randint(100000, 999999))
+            request.user.code = make_password(code)
+            request.user.save()
+            send_mail(
+                subject='Код подтверждения!',
+                message=f'Ваш код подтверждения: \n {code}',
+                from_email=None,
+                recipient_list=[request.user.email]
+            )
+            return HttpResponseRedirect(self.request.path)
         else:
-            return HttpResponseRedirect('/accounts/login/')
+            code = self.request.POST.get('verification_code')
+            if check_password(str(code), request.user.code):
+                request.user.verified = True
+                email_confirmed_by_code.send(sender=self.__class__, user=request.user)
+                return HttpResponseRedirect('/mainboard/profile/')
+            else:
+                return HttpResponseRedirect(self.request.path)

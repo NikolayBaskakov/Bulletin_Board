@@ -5,6 +5,7 @@ from django.urls import reverse
 class User(AbstractUser):
     email = models.EmailField(max_length=254, verbose_name='email address')
     code = models.TextField(default=None, null=True)
+    verified = models.BooleanField(default=False)
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
