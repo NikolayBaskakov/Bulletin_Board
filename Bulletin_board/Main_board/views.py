@@ -1,6 +1,8 @@
 from django.db.models.query import QuerySet
+from django.forms import BaseModelForm
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
+from django.contrib.auth.hashers import check_password
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -181,3 +183,19 @@ class ResponseCreate(LoginRequiredMixin, CreateView):
 def profile(request):
     context = {'user': request.user}
     return render(request, 'profile.html', context)
+
+class EmailVerifyView(UpdateView):
+    model = User
+    
+    def post(self, request, *args, **kwargs):
+        email = pass #TODO
+        code = str(self.request.POST.get('code'))
+        user = User.objects.get(email=email)
+        print(user.is_active)
+        if check_password(code, user.code):
+            user.is_active = True
+            user.save()
+            print('отработал')
+            return HttpResponseRedirect('/mainboard/profile/')
+        else:
+            return HttpResponseRedirect('/accounts/login/')

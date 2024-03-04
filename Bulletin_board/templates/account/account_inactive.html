@@ -1,0 +1,13 @@
+{% extends '../default.html'%}
+{% block title %}
+Code
+{% endblock title%}
+Code
+{% block content%}
+TODO
+<form action="/mainboard/verification/" method="post">
+    {% csrf_token %}
+    <input type="number", name="code", min="100000", max="999999">
+    <button type="submit">Отправить</button>
+</form>
+{% endblock content%}
