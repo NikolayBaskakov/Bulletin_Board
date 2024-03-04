@@ -10,7 +10,7 @@ from django.views.generic import DetailView, ListView, CreateView, UpdateView, D
 from .filters import *
 from .models import *
 from .forms import *
-from .signals import response_apply, email_confirmed_by_code
+from .signals import response_apply, response_create, email_confirmed_by_code
 from .custom_utils import make_slug
 from django.urls import reverse_lazy
 # Create your views here.
@@ -139,7 +139,7 @@ class UserResponsesView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
             if action == 'apply':
                 response_obj.applied = True
                 response_obj.save()
-                response_apply.send(sender=self.__class__, class_obj=response_obj)
+                response_apply.send(sender=self.__class__, response_obj=response_obj)
             elif action == 'deny':
                 response_obj.delete()
             return HttpResponseRedirect('/mainboard/responses')
@@ -185,7 +185,8 @@ class ResponseCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
             new_response.author = self.request.user
             new_response.slug = make_slug(new_response.text[:10])
             new_response.post = self.get_object()
-        new_response.save()
+            new_response.save()
+            response_create.send(sender=__class__, post_obj=new_response.post)
         return super().form_valid(form)
     
 @login_required
