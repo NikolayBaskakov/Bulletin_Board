@@ -55,7 +55,7 @@ class Category(models.Model):
         (POTION_MAKER, 'Зельевары'),
         (SPELL_MASTER, 'Мастера Заклинаний')
     ]
-    name = models.CharField(choices=TYPES, unique=True)
+    name = models.CharField(choices=TYPES, unique=True, max_length=255)
     
     def __str__(self):
         return self.get_name_display()
