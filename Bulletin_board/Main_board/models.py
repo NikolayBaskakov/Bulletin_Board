@@ -17,7 +17,7 @@ class Post(models.Model):
     title = models.CharField(max_length=30, verbose_name='Заголовок')
     creation_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата Создания')
     edit_date = models.DateTimeField(auto_now=True)
-    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор', related_name='post')
     text = models.TextField(verbose_name='Текст поста')
     category = models.ForeignKey('Category', on_delete=models.CASCADE, verbose_name='Категория')
     slug = models.SlugField(max_length=20, null=False, unique=True)
@@ -75,8 +75,10 @@ class Subscription(models.Model):
     user = models.ForeignKey(
         to=User,
         on_delete=models.CASCADE,
+        related_name='subscriptions',
     )
     category = models.ForeignKey(
         to='Category',
         on_delete=models.CASCADE,
+        related_name='subscriptions',
     )
