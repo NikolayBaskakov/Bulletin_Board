@@ -12,8 +12,8 @@ Quick start:
     Required packages from PyPI: django, psycopg2, django-summernote, python-dotenv, django-allauth, django-allauth[mfa],  django-filter
 
 4. In the folder with "settings.py" create file ".env" with the following content:
-
-    SECRET_KEY = 'your secret key'
+    ```
+    SECRET_KEY = 'your secret key' 
     POSTGRES_PASS = 'password for postgres'
     POSTGRES_DB_NAME = 'database name'
     POSTGRES_USER = 'user`s name for postgres'
@@ -21,6 +21,7 @@ Quick start:
     POSTGRES_PORT = 'postgres port'
     YANDEX_HOST_USER = 'yanex host like yourappemail@yandex.ru'
     YANDEX_HOST_PASSWORD = 'password from your yandex email app'
+    ```
 
 5. Change data in ".env" file on your own
 
