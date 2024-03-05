@@ -1,8 +1,17 @@
 # Bulletin_Board
-This is Django project - bulletin board for fans of fictional mmorpg
-By default it uses postgresql DBMS.
+#This is Django project - bulletin board for fans of fictional mmorpg
 
-Quick start:
+By default it uses postgresql DBMS. If you don`t want to use postgresql, change variable DATABASES in "settngs.py" on:
+    ```
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+    ```
+
+##Quick start:
 1. Create virtual environment by `python -m venv venv`
 
 2. Activate virtual environment by: `venv\Scripts\activate.bat` for Windows, `source venv/bin/activate` for Linux
@@ -22,24 +31,14 @@ Quick start:
     YANDEX_HOST_PASSWORD = 'password from your yandex email app'
     ```
 
-5. Change data in ".env" file on your own
+5. Generate your SECRET_KEY by `python manage.py keygen` and copy it to ".env" file
 
-5. Make migrations by `python manage.py makemigrations`
+6. Change other data in ".env" file on your own
 
-6. Apply migrations by `python manage.py migrate`
+7. Make migrations by `python manage.py makemigrations`
 
-7. Configure database by `python manage.py dbconfigure`
+8. Apply migrations by `python manage.py migrate`
 
-8. Run your project by `python manage.py runserver`
+9. Configure database by `python manage.py dbconfigure`
 
-PS: you can generate SECRET_KEY by function get_random_secret_key() from django.core.management.utils
-
-PPS: if you don`t want to use postgresql, change variable DATABASES in "settngs.py" on:
-    ```
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
-    ```
+10. Run your project by `python manage.py runserver`
