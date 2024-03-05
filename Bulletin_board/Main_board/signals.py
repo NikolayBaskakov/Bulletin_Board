@@ -46,6 +46,8 @@ def send_confirm_code(sender, user, **kwargs):
     
 @receiver(signal=email_changed)
 def send_confirm_code(sender, user, **kwargs):
+    if user.verified:
+        return
     code = str(random.randint(100000, 999999))
     user.code = make_password(code)
     user.save()
