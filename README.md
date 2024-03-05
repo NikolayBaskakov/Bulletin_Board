@@ -3,11 +3,11 @@ This is Django project - bulletin board for fans of fictional mmorpg
 By default it uses postgresql DBMS.
 
 Quick start:
-1. Create virtual environment by "python -m venv venv"
+1. Create virtual environment by `python -m venv venv`
 
-2. Activate virtual environment by: "venv\Scripts\activate.bat" for Windows, "source venv/bin/activate" for Linux
+2. Activate virtual environment by: `venv\Scripts\activate.bat` for Windows, `source venv/bin/activate` for Linux
 
-3. Being in folder with file "requirements.txt" install required packages from PyPI by "pip install -r requirements.txt"
+3. Being in folder with file "requirements.txt" install required packages from PyPI by `pip install -r requirements.txt`
 
 4. In the folder with "settings.py" create file ".env" with the following content:
     ```
@@ -23,21 +23,22 @@ Quick start:
 
 5. Change data in ".env" file on your own
 
-5. Make migrations by "python manage.py makemigrations"
+5. Make migrations by `python manage.py makemigrations`
 
-6. Apply migrations by "python manage.py migrate"
+6. Apply migrations by `python manage.py migrate`
 
-7. Configure database by "python manage.py dbconfigure"
+7. Configure database by `python manage.py dbconfigure`
 
-8. Run your project by ""python manage.py runserver"
+8. Run your project by `python manage.py runserver`
 
 PS: you can generate SECRET_KEY by function get_random_secret_key() from django.core.management.utils
 
 PPS: if you don`t want to use postgresql, change variable DATABASES in "settngs.py" on:
-
+    ```
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
+    ```
