@@ -4,7 +4,8 @@ from django.dispatch import receiver, Signal
 from django.core.mail import send_mail
 from django.contrib.auth.models import Group
 from django.contrib.auth.hashers import make_password, check_password
-from allauth.account.signals import user_signed_up
+from allauth.account.signals import user_signed_up, email_changed
+from allauth.account.models import EmailAddress
 from .models import Post, User
 response_apply = Signal()
 response_create = Signal()
@@ -29,6 +30,21 @@ def apply_handler(sender, response_obj, **kwargs):
     )
     
 @receiver(signal=user_signed_up)
+def send_confirm_code(sender, user, **kwargs):
+    code = str(random.randint(100000, 999999))
+    user.code = make_password(code)
+    user.save()
+    send_mail(
+        subject='Код подтверждения!',
+        message=f'Ваш код подтверждения: \n {code}',
+        from_email=None,
+        recipient_list=[user.email]
+    )
+    email = EmailAddress.objects.get(pk=user.pk)
+    email.verified = True
+    email.save()
+    
+@receiver(signal=email_changed)
 def send_confirm_code(sender, user, **kwargs):
     code = str(random.randint(100000, 999999))
     user.code = make_password(code)
