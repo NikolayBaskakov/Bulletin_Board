@@ -1,0 +1,7 @@
+django
+psycopg2
+django-summernote
+python-dotenv
+django-allauth
+django-allauth[mfa]
+django-filter

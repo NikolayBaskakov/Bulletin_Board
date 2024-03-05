@@ -7,9 +7,7 @@ Quick start:
 
 2. Activate virtual environment by: "venv\Scripts\activate.bat" for Windows, "source venv/bin/activate" for Linux
 
-3. Install required packages from PyPI by "pip install {package name}"
-
-    Required packages from PyPI: django, psycopg2, django-summernote, python-dotenv, django-allauth, django-allauth[mfa],  django-filter
+3. Being in folder with file "requirements.txt" install required packages from PyPI by "pip install -r requirements.txt"
 
 4. In the folder with "settings.py" create file ".env" with the following content:
     ```
