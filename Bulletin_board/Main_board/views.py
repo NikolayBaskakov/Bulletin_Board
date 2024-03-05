@@ -1,4 +1,5 @@
 from django.db.models.query import QuerySet
+from django.db.models import Exists, OuterRef
 from django.forms import BaseModelForm
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
@@ -221,3 +222,29 @@ class EmailVerifyView(View):
                 return HttpResponseRedirect('/mainboard/profile/')
             else:
                 return HttpResponseRedirect(self.request.path)
+            
+@login_required
+@permission_required('Main_board.standard', raise_exception=True)
+def subscriptions(request):
+    if request.method == 'POST':
+        category_id = request.POST.get('category_id')
+        category = Category.objects.get(pk=category_id)
+        action = request.POST.get('action')
+        
+        if action == 'subscribe':
+            Subscription.objects.create(user=request.user, category=category)
+        elif action == 'unsubscribe':
+            Subscription.objects.filter(
+                user=request.user,
+                category=category,
+            ).delete()
+    
+    context = {'categories': Category.objects.annotate(
+        user_subscribed=Exists(
+            Subscription.objects.filter(
+                user=request.user,
+                category=OuterRef('pk'),
+            )
+        )
+    ).order_by('name')}
+    return render(request, 'subscriptions.html', context)

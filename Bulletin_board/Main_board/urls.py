@@ -12,6 +12,7 @@ urlpatterns = [
     path('profile/', profile, name='profile'),
     path('posts/',  UserPostsView.as_view(), name='user-posts'),
     path('responses/', UserResponsesView.as_view(), name='user-responses'),
+    path('subscriptions/', subscriptions, name='subscriptions'),
     path('verification/', EmailVerifyView.as_view(), name='verification'),
     path('<slug:slug>/', PostDetail.as_view(), name='post-detail'),
     path('<slug:slug>/update/', PostUpdate.as_view(), name='update-view'),

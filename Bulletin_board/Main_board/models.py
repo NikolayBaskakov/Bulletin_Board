@@ -70,3 +70,13 @@ class Response(models.Model):
     date = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     slug = models.SlugField(max_length=20, null=False, unique=True)
     applied = models.BooleanField(default=None, null=True)
+    
+class Subscription(models.Model):
+    user = models.ForeignKey(
+        to=User,
+        on_delete=models.CASCADE,
+    )
+    category = models.ForeignKey(
+        to='Category',
+        on_delete=models.CASCADE,
+    )
