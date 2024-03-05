@@ -69,7 +69,7 @@ class PostCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
         new_post = form.save(commit=False)
         if self.request.method == 'POST':
             new_post.author = self.request.user
-            new_post.slug = make_slug(new_post.title)
+            new_post.slug = make_slug(new_post.title, self.model)
         new_post.save()
         return super().form_valid(form)
 
@@ -184,7 +184,7 @@ class ResponseCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
         new_response = form.save(commit=False)
         if self.request.method == 'POST':
             new_response.author = self.request.user
-            new_response.slug = make_slug(new_response.text[:10])
+            new_response.slug = make_slug(new_response.text[:10], self.model)
             new_response.post = self.get_object()
             new_response.save()
             response_create.send(sender=__class__, post_obj=new_response.post)
