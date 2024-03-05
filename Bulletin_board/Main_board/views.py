@@ -1,11 +1,9 @@
-from django.db.models.query import QuerySet
+import random
 from django.db.models import Exists, OuterRef
-from django.forms import BaseModelForm
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.decorators import login_required, permission_required
-from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView, View
 from .filters import *
@@ -14,6 +12,7 @@ from .forms import *
 from .signals import response_apply, response_create, email_confirmed_by_code
 from .custom_utils import make_slug
 from django.urls import reverse_lazy
+
 # Create your views here.
 class PostList(ListView):
     model = Post

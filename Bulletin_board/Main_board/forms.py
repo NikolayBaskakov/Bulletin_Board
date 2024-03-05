@@ -1,4 +1,3 @@
-import random
 from django import forms
 from django_summernote.fields import SummernoteTextFormField, SummernoteTextField
 from django_summernote.widgets import SummernoteWidget

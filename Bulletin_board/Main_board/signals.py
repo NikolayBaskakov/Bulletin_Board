@@ -3,7 +3,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver, Signal
 from django.core.mail import send_mail
 from django.contrib.auth.models import Group
-from django.contrib.auth.hashers import make_password, check_password
+from django.contrib.auth.hashers import make_password
 from allauth.account.signals import user_signed_up, email_changed
 from allauth.account.models import EmailAddress
 from .models import Post, User
