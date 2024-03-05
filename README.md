@@ -1,7 +1,8 @@
 # Bulletin_Board
 ## This is Django project - bulletin board for fans of fictional mmorpg
 
-By default it uses postgresql DBMS. If you don`t want to use postgresql, change variable DATABASES in "settngs.py" on:
+By default it uses postgresql DBMS. If you don`t want to use postgresql, change variable DATABASES in "settings.py" on:
+
     ```
     DATABASES = {
         'default': {
