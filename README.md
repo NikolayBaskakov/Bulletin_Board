@@ -7,13 +7,13 @@ Quick start:
 
 2. Activate virtual environment by: "venv\Scripts\activate.bat" for Windows, "source venv/bin/activate" for Linux
 
-3. Install required packages from PyPI by "pip install <package name>"
+3. Install required packages from PyPI by "pip install {package name}"
 
     Required packages from PyPI: django, psycopg2, django-summernote, python-dotenv, django-allauth, django-allauth[mfa],  django-filter
 
 4. In the folder with "settings.py" create file ".env" with the following content:
     ```
-    SECRET_KEY = 'your secret key' 
+    SECRET_KEY = 'your secret key'
     POSTGRES_PASS = 'password for postgres'
     POSTGRES_DB_NAME = 'database name'
     POSTGRES_USER = 'user`s name for postgres'
