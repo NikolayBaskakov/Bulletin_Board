@@ -1,5 +1,5 @@
 # Bulletin_Board
-#This is Django project - bulletin board for fans of fictional mmorpg
+## This is Django project - bulletin board for fans of fictional mmorpg
 
 By default it uses postgresql DBMS. If you don`t want to use postgresql, change variable DATABASES in "settngs.py" on:
     ```
@@ -11,7 +11,7 @@ By default it uses postgresql DBMS. If you don`t want to use postgresql, change 
     }
     ```
 
-##Quick start:
+### Quick start:
 1. Create virtual environment by `python -m venv venv`
 
 2. Activate virtual environment by: `venv\Scripts\activate.bat` for Windows, `source venv/bin/activate` for Linux
